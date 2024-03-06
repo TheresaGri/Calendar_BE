@@ -10,26 +10,19 @@ public class ToDo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private long userId;
+    private String username;
     private String description;
     private boolean isDone;
-
-    public ToDo(long userId, String description, boolean isDone) {
-        this.userId = userId;
-        this.description = description;
-        this.isDone = isDone;
-    }
 
     public ToDo() {
     }
 
-    public long getUserId() {
-        return userId;
+    public ToDo(String username, String description, boolean isDone) {
+        this.username = username;
+        this.description = description;
+        this.isDone = isDone;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
 
     public String getDescription() {
         return description;
@@ -45,5 +38,13 @@ public class ToDo {
 
     public void setDone(boolean done) {
         isDone = done;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

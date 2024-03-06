@@ -1,6 +1,7 @@
 package com.app.Calendar_BE.security;
 
-import com.app.Calendar_BE.services.UserService;
+import com.app.Calendar_BE.models.User;
+import com.app.Calendar_BE.repositories.UserRepository;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.core.Authentication;
@@ -8,40 +9,48 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 @Component
 public class UserSecurity implements AuthorizationManager<RequestAuthorizationContext> {
 
-    private final UserService userService;
+    private final UserRepository userRepository;
 
-    public UserSecurity(UserService userService) {
-        this.userService = userService;
+    public UserSecurity(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
-    public AuthorizationDecision check(Supplier authenticationSupplier, RequestAuthorizationContext ctx) {
-        Long userId = Long.parseLong(ctx.getVariables().get("userId"));
-        Authentication authentication = (Authentication) authenticationSupplier.get();
-        System.out.println("UserSecurity check");
-        return new AuthorizationDecision(hasUserId(authentication, userId));
+    public AuthorizationDecision check(Supplier<Authentication> authentication, RequestAuthorizationContext object) {
+        String username = object.getVariables().get("username");
+        Authentication authenticationSupplier = (Authentication) authentication.get();
+        return new AuthorizationDecision(hasUsername(authenticationSupplier, username));
     }
 
+    public boolean hasUsername(Authentication authentication, String username) {
+// Check if authentication is not null
+        if (authentication != null) {
+            // Retrieve the principal from the authentication
+            Object principal = authentication.getPrincipal();
 
-    public boolean hasUserId(Authentication authentication, Long userId) {
-        return Optional.ofNullable(authentication)
-                .map(Authentication::getPrincipal)
-                .map(principal -> {
-                    if (principal instanceof Jwt) {
-                        Jwt jwt = (Jwt) principal;
-                        String userName = jwt.getSubject();
-                        return userId.equals(userService.findIdByUsername(userName));
-                    }
+            // Check if the principal is an instance of Jwt
+            if (principal instanceof Jwt) {
+                Jwt jwt = (Jwt) principal;
 
-                    return false;
-                })
-                .orElse(false);
+                // Extract the username from the Jwt
+                String userName = jwt.getSubject();
+
+                User user = userRepository.findByUsername(userName).orElse(null);
+                String userNameOfUser = "";
+                if (user != null) {
+                    userNameOfUser = user.getUsername();
+                }
+                // Check if userIdFromService is not null and matches the provided userId
+                return userNameOfUser != "" && userNameOfUser.equals(username);
+            }
+        }
+
+        // Default to false if any condition is not met
+        return false;
     }
 }

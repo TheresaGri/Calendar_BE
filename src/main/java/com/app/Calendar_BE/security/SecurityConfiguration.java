@@ -24,6 +24,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -60,9 +61,10 @@ public class SecurityConfiguration {
                 cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/auth/login").permitAll();
-                    auth.requestMatchers("/auth/logout").permitAll();
+                  //  auth.requestMatchers("/auth/logout").permitAll();
                     auth.requestMatchers("/auth/register").permitAll();
-                   /*  auth.requestMatchers("/userDTO").hasAuthority("ROLE_ADMIN");
+                    auth.requestMatchers("/api/v1/todos/{username}").access(userSecurity);
+                    /*  auth.requestMatchers("/userDTO").hasAuthority("ROLE_ADMIN");
                     auth.requestMatchers("/transactions/{userId}").access(userSecurity);
                     auth.requestMatchers("/userDTO/{userId}").access(userSecurity);
                     auth.requestMatchers("/savingAccount/{userId}").access(userSecurity);
