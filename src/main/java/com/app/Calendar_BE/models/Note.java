@@ -29,6 +29,10 @@ public class Note {
         this.date = date;
     }
 
+    public Note(LocalDateTime creatingTime, LocalDate date) {
+        this.creatingTime = creatingTime;
+        this.date = date;
+    }
 
 
     public LocalDateTime getCreatingTime() {

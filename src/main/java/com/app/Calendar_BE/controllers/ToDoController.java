@@ -19,11 +19,12 @@ public class ToDoController {
     public ToDoController(ToDoRepository toDoRepository) {
         this.toDoRepository = toDoRepository;
     }
-    @GetMapping("/{username}")
-    public Optional<ToDo> getToDoByUserId(@PathVariable("username") String username) {
-        System.out.println(username);
-        System.out.println(toDoRepository.findToDoByUsername(username));
-        return toDoRepository.findToDoByUsername(username);
+
+    @PostMapping("/{username}")
+    public void saveNewToDo(@PathVariable String username, @RequestBody ToDo toDo) {
+        toDo.setUsername(username);
+        toDoRepository.save(toDo);
     }
+
 
 }

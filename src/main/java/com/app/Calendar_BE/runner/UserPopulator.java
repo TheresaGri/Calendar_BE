@@ -25,8 +25,8 @@ public class UserPopulator {
             roles.add(admin);
             User user1 = new User("Theresa",  passwordEncode.encode("1234"), roles );
             userRepository.save(user1);
-            ToDo toDo = new ToDo(user1.getUsername(),"test to do", false);
             LocalDate date = LocalDate.of(2020, 1, 8);
+            ToDo toDo = new ToDo(user1.getUsername(),"test to do", false, date);
             LocalTime ltime = LocalTime.now();
             LocalDateTime now = LocalDateTime.now();
             Appointment appointment = new Appointment(user1.getUsername(),"test appointment",date,ltime);

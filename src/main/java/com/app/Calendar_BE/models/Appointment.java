@@ -27,6 +27,12 @@ public class Appointment {
         this.time = time;
     }
 
+    public Appointment(String description, LocalDate date, LocalTime time) {
+        this.description = description;
+        this.date = date;
+        this.time = time;
+    }
+
 
     public String getDescription() {
         return description;
@@ -54,5 +60,9 @@ public class Appointment {
 
     public String getUsername() {
         return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
