@@ -24,10 +24,11 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
@@ -35,9 +36,11 @@ import java.util.List;
 public class SecurityConfiguration {
 
     private final RSAKeyProperties keys;
+    private final LogoutHandler logoutHandler;
 
-    public SecurityConfiguration(RSAKeyProperties keys) {
+    public SecurityConfiguration(RSAKeyProperties keys, LogoutHandler logoutHandler) {
         this.keys = keys;
+        this.logoutHandler = logoutHandler;
     }
 
     @Bean
@@ -56,31 +59,36 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, UserSecurity userSecurity) throws Exception {
-        http
+        () -> http
                 .csrf(csrf -> csrf.disable()).
                 cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/auth/login").permitAll();
-                  //  auth.requestMatchers("/auth/logout").permitAll();
+                    //  auth.requestMatchers("/auth/logout").permitAll();
                     auth.requestMatchers("/auth/register").permitAll();
                     auth.requestMatchers("/api/v1/todos/{username}").access(userSecurity);
                     auth.requestMatchers("/api/v1/userDTO/{username}").access(userSecurity);
-                    /*  auth.requestMatchers("/userDTO").hasAuthority("ROLE_ADMIN");
-                    auth.requestMatchers("/transactions/{userId}").access(userSecurity);
-                    auth.requestMatchers("/userDTO/{userId}").access(userSecurity);
-                    auth.requestMatchers("/savingAccount/{userId}").access(userSecurity);
-                    auth.requestMatchers("/giroAccount/{userId}").access(userSecurity); */
+                            /*  auth.requestMatchers("/userDTO").hasAuthority("ROLE_ADMIN");
+                            auth.requestMatchers("/transactions/{userId}").access(userSecurity);
+                            auth.requestMatchers("/userDTO/{userId}").access(userSecurity);
+                            auth.requestMatchers("/savingAccount/{userId}").access(userSecurity);
+                            auth.requestMatchers("/giroAccount/{userId}").access(userSecurity); */
 
                     auth.anyRequest().authenticated();
-                });
-
-        //TODO: change this, as it is deprecated
-        http.oauth2ResourceServer()
+                })
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .oauth2ResourceServer()
                 .jwt()
-                .jwtAuthenticationConverter(jwtAuthenticationConverter());
-        http.sessionManagement(
-                session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        );
+                .jwtAuthenticationConverter(jwtAuthenticationConverter())
+                .logout(logout ->
+                        logout.logoutUrl("/auth/logout")
+                                .addLogoutHandler(logoutHandler)
+                                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
+                )
+
+
 
         return http.build();
     }

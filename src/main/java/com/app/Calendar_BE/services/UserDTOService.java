@@ -9,7 +9,9 @@ import com.app.Calendar_BE.repositories.NoteRepository;
 import com.app.Calendar_BE.repositories.ToDoRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserDTOService {
@@ -21,17 +23,33 @@ public class UserDTOService {
         this.appointmentRepository = appointmentRepository;
         this.noteRepository = noteRepository;
         this.toDoRepository = toDoRepository;
+
+
     }
 
     public UserDTO getUserDTO(String username) {
         List<Appointment> appointmentList = appointmentRepository.findAppointmentsByUsername(username);
         List<Note> noteList = noteRepository.findNotesByUsername(username);
         List<ToDo> toDoList = toDoRepository.findToDosByUsername(username);
-        System.out.println(appointmentList);
-        System.out.println(noteList);
-        System.out.println(toDoList);
-        UserDTO userDTO = new UserDTO(appointmentList,noteList,toDoList);
-        System.out.println(userDTO);
-        return userDTO;
+        return new UserDTO(appointmentList,noteList,toDoList);
+    }
+
+    public UserDTO getUserDTOByDate(String username, LocalDate date) {
+        List<Appointment> appointmentList = appointmentRepository.
+                findAppointmentsByUsername(username).
+                stream().
+                filter(appointment -> appointment.getDate().equals(date)).
+                collect(Collectors.toList());;
+        List<Note> noteList = noteRepository.
+                findNotesByUsername(username).
+                stream().
+                filter(note -> note.getDate().equals(date)).
+                collect(Collectors.toList());
+        List<ToDo> toDoList = toDoRepository.
+                findToDosByUsername(username).
+                stream().
+                filter(toDo -> toDo.getDate().equals(date)).
+                collect(Collectors.toList());
+        return new UserDTO(appointmentList, noteList, toDoList);
     }
 }

@@ -3,6 +3,7 @@ package com.app.Calendar_BE.models;
 import jakarta.persistence.*;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -22,6 +23,9 @@ public class User  implements UserDetails {
             inverseJoinColumns = {@JoinColumn(name = "role_id")}
     )
     private Set<Role> authorities;
+
+    @OneToMany(mappedBy = "user")
+    private List<Token> tokenList;
 
     public User(String username, String password, Set<Role> authorities) {
         this.username = username;

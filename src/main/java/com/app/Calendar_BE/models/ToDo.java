@@ -5,6 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import java.time.LocalDate;
+
 @Entity
 public class ToDo {
     @Id
@@ -13,14 +15,22 @@ public class ToDo {
     private String username;
     private String description;
     private boolean isDone;
+    private LocalDate date;
 
     public ToDo() {
     }
 
-    public ToDo(String username, String description, boolean isDone) {
+    public ToDo(String username, String description, boolean isDone, LocalDate date) {
         this.username = username;
         this.description = description;
         this.isDone = isDone;
+        this.date = date;
+    }
+
+    public ToDo(String description, boolean isDone, LocalDate date) {
+        this.description = description;
+        this.isDone = isDone;
+        this.date = date;
     }
 
 
@@ -46,5 +56,13 @@ public class ToDo {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 }
