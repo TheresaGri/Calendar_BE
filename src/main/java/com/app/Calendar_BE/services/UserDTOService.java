@@ -23,6 +23,8 @@ public class UserDTOService {
         this.appointmentRepository = appointmentRepository;
         this.noteRepository = noteRepository;
         this.toDoRepository = toDoRepository;
+
+
     }
 
     public UserDTO getUserDTO(String username) {
