@@ -28,7 +28,6 @@ public class UserSecurity implements AuthorizationManager<RequestAuthorizationCo
     public AuthorizationDecision check(Supplier<Authentication> authentication, RequestAuthorizationContext object) {
         String username = object.getVariables().get("username");
         Authentication authenticationSupplier = (Authentication) authentication.get();
-
         JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) authenticationSupplier;
         Jwt jwt = (Jwt) jwtAuthenticationToken.getCredentials();
         String token = jwt.getTokenValue();

@@ -59,7 +59,7 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, UserSecurity userSecurity) throws Exception {
-        () -> http
+        http
                 .csrf(csrf -> csrf.disable()).
                 cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> {
@@ -67,31 +67,31 @@ public class SecurityConfiguration {
                     //  auth.requestMatchers("/auth/logout").permitAll();
                     auth.requestMatchers("/auth/register").permitAll();
                     auth.requestMatchers("/api/v1/todos/{username}").access(userSecurity);
+                    auth.requestMatchers("/api/v1/appointment/{username}").access(userSecurity);
+                    auth.requestMatchers("/api/v1/notes/{username}").access(userSecurity);
                     auth.requestMatchers("/api/v1/userDTO/{username}").access(userSecurity);
-                            /*  auth.requestMatchers("/userDTO").hasAuthority("ROLE_ADMIN");
-                            auth.requestMatchers("/transactions/{userId}").access(userSecurity);
-                            auth.requestMatchers("/userDTO/{userId}").access(userSecurity);
-                            auth.requestMatchers("/savingAccount/{userId}").access(userSecurity);
-                            auth.requestMatchers("/giroAccount/{userId}").access(userSecurity); */
+                    auth.requestMatchers("/api/v1/userDTO/{username}/{date}").access(userSecurity);
 
                     auth.anyRequest().authenticated();
-                })
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .oauth2ResourceServer()
+                });
+
+        //TODO: change this, as it is deprecated
+        http.oauth2ResourceServer()
                 .jwt()
-                .jwtAuthenticationConverter(jwtAuthenticationConverter())
-                .logout(logout ->
-                        logout.logoutUrl("/auth/logout")
-                                .addLogoutHandler(logoutHandler)
-                                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
-                )
+                .jwtAuthenticationConverter(jwtAuthenticationConverter());
+        http.sessionManagement(
+                session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        );
 
-
+        http.logout()
+                .logoutUrl("/auth/logout")
+                .addLogoutHandler(logoutHandler)
+                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()
+                );
 
         return http.build();
     }
+
 
     @Bean
     public JwtDecoder jwtDecoder() {
