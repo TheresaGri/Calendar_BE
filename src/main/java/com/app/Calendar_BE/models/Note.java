@@ -14,26 +14,22 @@ public class Note {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private long userId;
+    private String username;
     private LocalDateTime creatingTime;
     private LocalDate date;
 
-    public Note(long userId, LocalDateTime creatingTime, LocalDate date) {
-        this.userId = userId;
-        this.creatingTime = creatingTime;
-        this.date = date;
-    }
+
 
     public Note() {
     }
 
-    public long getUserId() {
-        return userId;
+    public Note(String username, LocalDateTime creatingTime, LocalDate date) {
+        this.username = username;
+        this.creatingTime = creatingTime;
+        this.date = date;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
+
 
     public LocalDateTime getCreatingTime() {
         return creatingTime;
@@ -49,5 +45,13 @@ public class Note {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

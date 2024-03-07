@@ -12,28 +12,21 @@ public class Appointment {
     @Id
     @GeneratedValue
     private long id;
-    private long userId;
+    private String username;
     private String description;
     private LocalDate date;
     private LocalTime time;
 
-    public Appointment(long userId, String description, LocalDate date, LocalTime time) {
-        this.userId = userId;
+    public Appointment() {
+    }
+
+    public Appointment(String username, String description, LocalDate date, LocalTime time) {
+        this.username = username;
         this.description = description;
         this.date = date;
         this.time = time;
     }
 
-    public Appointment() {
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
 
     public String getDescription() {
         return description;
@@ -57,5 +50,9 @@ public class Appointment {
 
     public void setTime(LocalTime time) {
         this.time = time;
+    }
+
+    public String getUsername() {
+        return username;
     }
 }

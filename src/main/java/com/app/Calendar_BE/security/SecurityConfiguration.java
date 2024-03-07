@@ -64,6 +64,7 @@ public class SecurityConfiguration {
                   //  auth.requestMatchers("/auth/logout").permitAll();
                     auth.requestMatchers("/auth/register").permitAll();
                     auth.requestMatchers("/api/v1/todos/{username}").access(userSecurity);
+                    auth.requestMatchers("/api/v1/userDTO/{username}").access(userSecurity);
                     /*  auth.requestMatchers("/userDTO").hasAuthority("ROLE_ADMIN");
                     auth.requestMatchers("/transactions/{userId}").access(userSecurity);
                     auth.requestMatchers("/userDTO/{userId}").access(userSecurity);
