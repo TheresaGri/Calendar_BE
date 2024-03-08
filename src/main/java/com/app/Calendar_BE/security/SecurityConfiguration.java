@@ -35,6 +35,13 @@ import java.util.List;
 @Configuration
 public class SecurityConfiguration {
 
+    private static final String[] USER_SECURITY_URL = {"/api/v1/todos/{username}",
+            "/api/v1/appointment/{username}",
+            "/api/v1/notes/{username}",
+            "/api/v1/userDTO/{username}",
+            "/api/v1/userDTO/{username}/{date}"
+            };
+
     private final RSAKeyProperties keys;
     private final LogoutHandler logoutHandler;
 
@@ -64,14 +71,8 @@ public class SecurityConfiguration {
                 cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/auth/login").permitAll();
-                    //  auth.requestMatchers("/auth/logout").permitAll();
                     auth.requestMatchers("/auth/register").permitAll();
-                    auth.requestMatchers("/api/v1/todos/{username}").access(userSecurity);
-                    auth.requestMatchers("/api/v1/appointment/{username}").access(userSecurity);
-                    auth.requestMatchers("/api/v1/notes/{username}").access(userSecurity);
-                    auth.requestMatchers("/api/v1/userDTO/{username}").access(userSecurity);
-                    auth.requestMatchers("/api/v1/userDTO/{username}/{date}").access(userSecurity);
-
+                    auth.requestMatchers(USER_SECURITY_URL).access(userSecurity);
                     auth.anyRequest().authenticated();
                 });
 
