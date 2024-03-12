@@ -42,7 +42,7 @@ public class AuthenticationService {
 
         authorities.add(userRole);
 
-        return userRepository.save(new User(username, encodedPassword, authorities));
+        return userRepository.save(new User(username, encodedPassword, "", "", authorities));
     }
 
     public LoginResponseDTO loginUser(String username, String password) {

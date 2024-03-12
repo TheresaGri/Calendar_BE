@@ -72,6 +72,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/auth/login").permitAll();
                     auth.requestMatchers("/auth/register").permitAll();
+                    auth.requestMatchers("/send-email").permitAll();
                     auth.requestMatchers(USER_SECURITY_URL).access(userSecurity);
                     auth.anyRequest().authenticated();
                 });

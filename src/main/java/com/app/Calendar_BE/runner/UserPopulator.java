@@ -23,7 +23,7 @@ public class UserPopulator {
             Set<Role> roles = new HashSet<>();
             roles.add(user);
             roles.add(admin);
-            User user1 = new User("Theresa",  passwordEncode.encode("1234"), roles );
+            User user1 = new User("Theresa",  passwordEncode.encode("1234"), "Theresa", "G", roles );
             userRepository.save(user1);
             LocalDate date = LocalDate.of(2020, 1, 8);
             ToDo toDo = new ToDo(user1.getUsername(),"test to do", false, date);

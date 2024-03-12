@@ -6,6 +6,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.List;
 import java.util.Set;
 
+
+//email verification:
 @Entity
 @Table(name = "user_table")
 public class User  implements UserDetails {
@@ -16,6 +18,11 @@ public class User  implements UserDetails {
     @Column(unique=true)
     private String username;
     private String password;
+
+    private String firstName;
+    private String lastName;
+
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role_junction",
@@ -27,9 +34,12 @@ public class User  implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<Token> tokenList;
 
-    public User(String username, String password, Set<Role> authorities) {
+
+    public User(String username, String password, String firstName, String lastName, Set<Role> authorities) {
         this.username = username;
         this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.authorities = authorities;
     }
 
@@ -88,5 +98,22 @@ public class User  implements UserDetails {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }
